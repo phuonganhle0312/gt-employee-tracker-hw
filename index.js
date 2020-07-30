@@ -98,7 +98,7 @@ function addEntry() {
         type: "list",
         name: "add",
         message: "What would you like to add?",
-        choices: ["Add Employeee", "Add Department", "Add Roles"],
+        choices: ["Add Employee", "Add Department", "Add Roles"],
     })
     .then((choice)=> {
         if (choice.add === "Add Employee") {
@@ -154,7 +154,7 @@ function addRoles () {
                 {
                 type: "list",
                 name: "department",
-                message: "Enter role department:",
+                message: "Choose role department.",
                 choices: departments,
                 },
         ])
@@ -175,3 +175,53 @@ function addRoles () {
     });
 }
 
+//add employee
+function addEmployee() {
+    // connection.query("SELECT * FROM roles", (err, data) => {
+    //     const role = data.map((roles) => {
+    //         return{
+    //         name: roles.title,
+    //         value: roles.id,
+    //         }
+    //     })
+        inquirer.prompt([
+                {
+                    type: "input",
+                    name: "firstName",
+                    message: "Enter employee's first name.",
+                  },
+                  {
+                    type: "input",
+                    name: "lastName",
+                    message: "Enter employee's last name.",
+                  },
+                {
+                    type: "input",
+                    name: "role",
+                    message: "Enter employee role.",
+            
+                },
+                {
+                    type: "input",
+                    name: "manager",
+                    message: "Enter employee's manager.",
+                },
+            ])
+            .then((answer)=> {
+                console.table(answer);
+                connection.query("INSERT INTO employees SET ?",
+                {
+                    first_name: answer.firstName,
+                    last_name: answer.lastName,
+                    role_id: answer.role,
+                    manager_id: answer.manager,
+                },
+                (err, data)=>
+                {
+                    if (err) throw err;
+                    questions();
+                });
+            });
+
+    
+}
