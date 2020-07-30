@@ -118,10 +118,13 @@ function addDepartment() {
         message:"Enter department name."
     })
     .then((answer)=> {
+        console.table(answer);
         connection.query(
-            `INSERT INTO department (name)
-            VALUES ("${answer.addDepartment}");`,
-            (err, data) => {
+            "INSERT INTO department SET ?",
+            { 
+                title: answer.title,
+            },
+        (err, data) => {
                 if(err) throw err;
                 questions();
             }
@@ -129,4 +132,46 @@ function addDepartment() {
     });
 }
 //add roles
+function addRoles () {
+    connection.query("SELECT * FROM department", (err, data)=>{
+        const departments = data.map((department)=> {
+            return {
+                name: department.title,
+                value: department.id,
+            }
+        })
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "roleTitle",
+                message: "Enter role title.",
+                },
+                {
+                type: "input",
+                name: "salary",
+                message: "Enter role salary.",
+                },
+                {
+                type: "list",
+                name: "department",
+                message: "Enter role department:",
+                choices: departments,
+                },
+        ])
+        .then((answer)=> {
+            console.table(answer);
+            connection.query(
+                "INSERT INTO roles SET ?",
+                {
+                    title: answer.roleTitle,
+                    salary: answer.salary,
+                    department_id: answer.department,
+                },
+                (err, data) => {
+                    questions();
+                }
+            );
+        });
+    });
+}
 
